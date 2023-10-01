@@ -6,6 +6,8 @@ namespace J7\WP_REACT_PLUGIN\React\Admin;
 
 use Kucrut\Vite;
 
+require_once __DIR__ . '/plugins/gamipress/gamipress.php';
+
 class Bootstrap
 {
 	const PLUGIN_DIR = __DIR__ . '/../';
@@ -33,6 +35,7 @@ class Bootstrap
 		\add_action('admin_enqueue_scripts', [$this, 'enqueue_script'], 99);
 		\add_action('wp_enqueue_scripts', [$this, 'enqueue_script'], 99);
 		\add_action('wp_footer', [$this, 'render_app']);
+		\add_action('admin_menu', [$this, 'admin_menu']);
 	}
 
 	/**
@@ -87,7 +90,55 @@ class Bootstrap
 			'nonce' => \wp_create_nonce('wp_rest'),
 		));
 	}
+
+	/**
+	 * Registers a new settings page under Settings.
+	 */
+	public function admin_menu()
+	{
+		\add_menu_page(
+			\__('settings', $_ENV['KEBAB']),
+			\__('MemberShip Reward', $_ENV['KEBAB']),
+			'manage_options', // user capabilities
+			$_ENV['SNAKE'] . '_settings',
+			[$this, 'settings_page_callback'],
+			'dashicons-awards', // icon (from Dashicons for example)
+			4 // menu position
+
+		);
+	}
+
+	/**
+	 * Settings page display callback.
+	 */
+	public function settings_page_callback(): void
+	{
+		echo '<div id="' . $_ENV['VITE_RENDER_ID_1'] . '"></div>';
+	}
+
+	public static function activate_callback(): void
+	{
+		self::create_rank_type();
+	}
+
+	public static function create_rank_type()
+	{
+
+		// find the post with "member_lv" slug
+		$rank_type = \get_page_by_path('member_lv', OBJECT, 'rank-type');
+		if (!$rank_type) {
+			$args = array(
+				'post_title' => '會員等級',
+				'post_name' => 'member_lv',
+				'post_type' => 'rank-type',
+				'post_status' => 'publish',
+			);
+			// create post
+			\wp_insert_post($args);
+		}
+	}
 }
+
 
 require_once __DIR__ . '/utils/includes.php';
 require_once __DIR__ . '/custom/includes.php';

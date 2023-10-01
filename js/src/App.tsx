@@ -1,16 +1,11 @@
 /* eslint-disable quote-props */
 import '@/assets/scss/index.scss'
-import DefaultPage from '@/pages'
-import About from '@/pages/about'
+
+import { MemberLevelList, MemberLevelEdit } from '@/pages/MemberLevel/'
 
 import { Refine } from '@refinedev/core'
 
-import {
-  ErrorComponent,
-  notificationProvider,
-  ThemedLayoutV2,
-  ThemedSiderV2,
-} from '@refinedev/antd'
+import { ErrorComponent, notificationProvider } from '@refinedev/antd'
 import '@refinedev/antd/dist/reset.css'
 import routerBindings, {
   DocumentTitleHandler,
@@ -19,6 +14,7 @@ import routerBindings, {
 import { dataProvider } from './rest-data-provider'
 import { HashRouter, Outlet, Route, Routes } from 'react-router-dom'
 import { apiUrl } from '@/utils'
+import { resources } from '@/resources'
 
 function App() {
   return (
@@ -32,28 +28,7 @@ function App() {
         }}
         notificationProvider={notificationProvider}
         routerProvider={routerBindings}
-        resources={[
-          {
-            name: 'blog_posts',
-            list: '/blog-posts',
-            create: '/blog-posts/create',
-            edit: '/blog-posts/edit/:id',
-            show: '/blog-posts/show/:id',
-            meta: {
-              canDelete: true,
-            },
-          },
-          {
-            name: 'categories',
-            list: '/categories',
-            create: '/categories/create',
-            edit: '/categories/edit/:id',
-            show: '/categories/show/:id',
-            meta: {
-              canDelete: true,
-            },
-          },
-        ]}
+        resources={resources}
         options={{
           syncWithLocation: false,
           warnWhenUnsavedChanges: true,
@@ -61,17 +36,10 @@ function App() {
         }}
       >
         <Routes>
-          <Route
-            element={
-              <ThemedLayoutV2
-                Sider={(props) => <ThemedSiderV2 {...props} fixed />}
-              >
-                <Outlet />
-              </ThemedLayoutV2>
-            }
-          >
-            <Route index element={<DefaultPage />} />
-            <Route path="/about" element={<About />} />
+          <Route element={<Outlet />}>
+            <Route index element={<MemberLevelList />} />
+            <Route path="/member_lv/edit/:id" element={<MemberLevelEdit />} />
+            {/* <Route path="/member_lvs/delete/:id" element={<MemberLevelEdit />} /> */}
 
             <Route path="*" element={<ErrorComponent />} />
           </Route>

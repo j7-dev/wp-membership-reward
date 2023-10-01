@@ -1,12 +1,11 @@
 <?php
 
 /**
- * Plugin Name: WP Refine Plugin
- * Description: WP Refine Plugin is a boilerplate for creating a WordPress plugin with React, Tailwind, TypeScript, React Query v4, SCSS and Vite.
- * Author: j7.dev
+ * Plugin Name: WP Membership Reward
+ * Description: WP Membership Reward 是一個可以創建會員等級以及設定獎勵的外掛
  * Author URI: https://github.com/j7-dev
  * License: GPLv2
- * Version: 1.0.1
+ * Version: 1.0.0
  * Requires PHP: 7.4.0
  */
 
@@ -31,3 +30,5 @@ $dotenv->safeLoad();
 
 $instance = new Admin\Bootstrap();
 $instance->init();
+
+\register_activation_hook(__FILE__, [__NAMESPACE__ . '\Admin\Bootstrap', 'activate_callback']);

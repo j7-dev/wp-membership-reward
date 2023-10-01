@@ -26,6 +26,7 @@
     "@refinedev/simple-rest": "^4.5.2",
     "@rollup/plugin-alias": "^5.0.0",
     "@tanstack/react-query": "^4.24.9",
+    "antd-utility": "^0.0.3",
     "axios": "0.26.1",
     "query-string": "7.1.1",
     "react": "^18.2.0",
