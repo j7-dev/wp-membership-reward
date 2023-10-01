@@ -1,11 +1,13 @@
 /* eslint-disable quote-props */
 import '@/assets/scss/index.scss'
 
-import { MemberLevelList, MemberLevelEdit } from '@/pages/MemberLevel/'
-
 import { Refine } from '@refinedev/core'
-
-import { ErrorComponent, notificationProvider } from '@refinedev/antd'
+import { Sider } from '@/components/layout/'
+import {
+  ErrorComponent,
+  notificationProvider,
+  ThemedLayoutV2,
+} from '@refinedev/antd'
 import '@refinedev/antd/dist/reset.css'
 import routerBindings, {
   DocumentTitleHandler,
@@ -15,6 +17,11 @@ import { dataProvider } from './rest-data-provider'
 import { HashRouter, Outlet, Route, Routes } from 'react-router-dom'
 import { apiUrl } from '@/utils'
 import { resources } from '@/resources'
+import {
+  MemberLevelList,
+  MemberLevelEdit,
+  MemberLevelCreate,
+} from '@/pages/MemberLevel/'
 
 function App() {
   return (
@@ -36,9 +43,21 @@ function App() {
         }}
       >
         <Routes>
-          <Route element={<Outlet />}>
+          <Route
+            element={
+              <ThemedLayoutV2 Sider={Sider}>
+                <Outlet />
+              </ThemedLayoutV2>
+            }
+          >
             <Route index element={<MemberLevelList />} />
-            <Route path="/member_lv/edit/:id" element={<MemberLevelEdit />} />
+
+            <Route path="/member_lv/">
+              <Route index element={<MemberLevelList />} />
+              <Route path="edit/:id" element={<MemberLevelEdit />} />
+              <Route path="create" element={<MemberLevelCreate />} />
+            </Route>
+
             {/* <Route path="/member_lvs/delete/:id" element={<MemberLevelEdit />} /> */}
 
             <Route path="*" element={<ErrorComponent />} />

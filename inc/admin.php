@@ -36,6 +36,7 @@ class Bootstrap
 		\add_action('wp_enqueue_scripts', [$this, 'enqueue_script'], 99);
 		\add_action('wp_footer', [$this, 'render_app']);
 		\add_action('admin_menu', [$this, 'admin_menu']);
+		\add_action('rest_api_init', [$this, 'register_meta_in_rest_api'], 99);
 	}
 
 	/**
@@ -121,7 +122,7 @@ class Bootstrap
 		self::create_rank_type();
 	}
 
-	public static function create_rank_type()
+	public static function create_rank_type(): void
 	{
 
 		// find the post with "member_lv" slug
@@ -136,6 +137,36 @@ class Bootstrap
 			// create post
 			\wp_insert_post($args);
 		}
+	}
+
+	public function register_meta_in_rest_api(): void
+	{ // FIXME 無法更新
+		\register_rest_field('member_lv', 'threshold', array(
+			'get_callback' => [$this, 'get_custom_meta_field'],
+			'update_callback' => function ($value, $object) {
+				\update_post_meta($object->ID, 'threshold', \sanitize_text_field($value));
+			},
+			'schema' => null,
+		));
+		\register_rest_field('member_lv', '_gamipress_expirations_amount', array(
+			'get_callback' => [$this, 'get_custom_meta_field'],
+			'update_callback' => function ($value, $object) {
+				\update_post_meta($object->ID, '_gamipress_expirations_amount', \sanitize_text_field($value));
+			},
+			'schema' => null,
+		));
+		\register_rest_field('member_lv', '_gamipress_expirations_expiration', array(
+			'get_callback' => [$this, 'get_custom_meta_field'],
+			'update_callback' => function ($value, $object) {
+				\update_post_meta($object->ID, '_gamipress_expirations_expiration', \sanitize_text_field($value));
+			},
+			'schema' => null,
+		));
+	}
+
+	public function get_custom_meta_field($post, $field_name, $request)
+	{
+		return \get_post_meta($post['id'], $field_name, true);
 	}
 }
 

@@ -1,54 +1,40 @@
 import FormComponent from '@/components/resources/post/FormComponent'
-import { useCreate, HttpError } from '@refinedev/core'
 import { Create, useForm } from '@refinedev/antd'
-import { notification } from 'antd'
-import { ArgsProps } from 'antd/es/notification/interface'
-import { TPost } from '@/types'
+import { currentUserId } from '@/utils'
 
 const index: React.FC<{
   postType?: string
-  notificationConfig?: ArgsProps
-}> = ({ notificationConfig = {}, postType = 'post' }) => {
-  const { mutate: create } = useCreate()
-  const { form, formProps, saveButtonProps, formLoading } = useForm<
-    TPost,
-    HttpError,
-    TPost
-  >()
-  const handleCreate = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        create(
-          {
-            resource: postType,
-            values,
-          },
-          {
-            onSuccess: () => {
-              form.resetFields()
-              notification.success({
-                key: `create-${postType}`,
-                message: `Create ${postType} successfully`,
-                ...notificationConfig,
-              })
-            },
-          },
-        )
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+  children?: React.ReactNode
+  handler?: (_values: any) => void
+  init?: () => void
+}> = ({ postType = 'post', children, handler, init }) => {
+  const { formProps, formLoading, onFinish, saveButtonProps } = useForm({
+    action: 'create',
+    resource: postType,
+    redirect: 'list',
+  })
+
+  const handleCreate = (values: any) => {
+    const { title, content, ...rest } = values
+    onFinish({
+      title,
+      content: content || '',
+      status: 'publish',
+      author: currentUserId,
+      meta: rest,
+    })
   }
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create saveButtonProps={saveButtonProps} isLoading={formLoading}>
       <FormComponent
-        formType="create"
         formProps={formProps}
         formLoading={formLoading}
-        handler={handleCreate}
-      />
+        handler={handler ? handler : handleCreate}
+        init={init}
+      >
+        {children}
+      </FormComponent>
     </Create>
   )
 }

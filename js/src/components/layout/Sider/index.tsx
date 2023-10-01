@@ -8,13 +8,13 @@ import {
   UnorderedListOutlined,
   RightOutlined,
   LeftOutlined,
-  RadarChartOutlined,
+  CrownOutlined,
 } from '@ant-design/icons'
 import { antLayoutSider, antLayoutSiderMobile } from './styles'
 import { nanoid } from 'nanoid'
 
 const { useToken } = theme
-const siderWidth = 320
+const siderWidth = 200
 
 const CustomSider: typeof Sider = () => {
   const { token } = useToken()
@@ -139,8 +139,14 @@ const CustomSider: typeof Sider = () => {
       >
         <ThemedTitleV2
           collapsed={collapsed}
-          icon={<RadarChartOutlined className="text-[1.5rem]" />}
-          text="SmartBet"
+          icon={<CrownOutlined className="text-[1.5rem] text-yellow-400" />}
+          text={
+            <span className="text-xs font-normal">
+              Membership
+              <br />
+              Reward
+            </span>
+          }
         />
       </div>
       <Menu

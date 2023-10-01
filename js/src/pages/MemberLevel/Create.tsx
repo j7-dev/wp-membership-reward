@@ -1,11 +1,11 @@
-import { Edit } from '@/components/resources/post'
+import { Create } from '@/components/resources/post'
 import FormComponent from './FormComponent'
 
 const index = () => {
   return (
-    <Edit postType="member_lv">
+    <Create postType="member_lv">
       <FormComponent />
-    </Edit>
+    </Create>
   )
 }
 

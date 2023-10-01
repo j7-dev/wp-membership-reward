@@ -8,7 +8,7 @@ import useColumns from './hooks/useColumns'
 import { TPost } from '@/types'
 import { TColumnsProps } from './types'
 
-const DetailedInformation: React.FC<TColumnsProps> = ({
+const index: React.FC<TColumnsProps> = ({
   postType = 'posts',
   columns,
   canShow,
@@ -30,7 +30,7 @@ const DetailedInformation: React.FC<TColumnsProps> = ({
   })
 
   return (
-    <List canCreate>
+    <List resource="member_lv" canCreate>
       <Row
         gutter={[
           16,
@@ -59,4 +59,4 @@ const DetailedInformation: React.FC<TColumnsProps> = ({
   )
 }
 
-export default DetailedInformation
+export default index

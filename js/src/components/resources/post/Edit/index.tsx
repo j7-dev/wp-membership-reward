@@ -1,60 +1,41 @@
 import FormComponent from '@/components/resources/post/FormComponent'
-import { useUpdate, HttpError } from '@refinedev/core'
 import { Edit, useForm } from '@refinedev/antd'
-import { TPost } from '@/types'
-import { notification } from 'antd'
-import { ArgsProps } from 'antd/es/notification/interface'
 import { useParams } from 'react-router-dom'
 
 const index: React.FC<{
   postType: string
-  notificationConfig?: ArgsProps
-}> = ({ postType = 'post', notificationConfig = {} }) => {
-  const { mutate: update } = useUpdate()
+  children?: React.ReactNode
+  handler?: () => void
+  init?: () => void
+}> = ({ postType = 'post', children, handler, init }) => {
   const { id } = useParams()
 
-  const { form, formProps, saveButtonProps, formLoading } = useForm<
-    TPost,
-    HttpError,
-    TPost
-  >()
+  const { formProps, formLoading, onFinish, saveButtonProps } = useForm({
+    action: 'edit',
+    resource: postType,
+    redirect: 'list',
+  })
 
-  const handleUpdate = () => {
+  const handleUpdate = (values: any) => {
     if (!id) return
-    form
-      .validateFields()
-      .then((values) => {
-        update(
-          {
-            resource: postType,
-            values,
-            id,
-          },
-          {
-            onSuccess: () => {
-              form.resetFields()
-              notification.success({
-                key: `edit-${postType}`,
-                message: `Edit ${postType} successfully`,
-                ...notificationConfig,
-              })
-            },
-          },
-        )
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    const { title, content, ...rest } = values
+    onFinish({
+      title,
+      content: content || '',
+      meta: rest,
+    })
   }
 
   return (
-    <Edit saveButtonProps={saveButtonProps}>
+    <Edit saveButtonProps={saveButtonProps} isLoading={formLoading}>
       <FormComponent
-        formType="edit"
         formProps={formProps}
         formLoading={formLoading}
-        handler={handleUpdate}
-      />
+        handler={handler ? handler : handleUpdate}
+        init={init}
+      >
+        {children}
+      </FormComponent>
     </Edit>
   )
 }
